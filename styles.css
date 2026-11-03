@@ -3,6 +3,7 @@
    ========================================================================== */
 :root {
   box-sizing: border-box;
+  color-scheme: light;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
   --bg: #f1f4f8;
@@ -21,33 +22,35 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
+    color-scheme: dark;
     --bg: #0f151c;
     --surface: #18212b;
-    --ink: #e8eef4;
-    --muted: #98a7b6;
-    --line: #2b3846;
-    --grid: #222d39;
-    --x: #6ea8ff;
-    --o: #ff9a62;
-    --good: #5fd08e;
-    --warn: #e6b84f;
-    --bad: #f07a7a;
+    --ink: #eef3f8;
+    --muted: #a4b3c2;
+    --line: #2e3c4b;
+    --grid: #242f3c;
+    --x: #75adff;
+    --o: #ffa370;
+    --good: #63d692;
+    --warn: #f0be54;
+    --bad: #f58484;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
   }
 }
 
 :root[data-theme="dark"] {
+  color-scheme: dark;
   --bg: #0f151c;
   --surface: #18212b;
-  --ink: #e8eef4;
-  --muted: #98a7b6;
-  --line: #2b3846;
-  --grid: #222d39;
-  --x: #6ea8ff;
-  --o: #ff9a62;
-  --good: #5fd08e;
-  --warn: #e6b84f;
-  --bad: #f07a7a;
+  --ink: #eef3f8;
+  --muted: #a4b3c2;
+  --line: #2e3c4b;
+  --grid: #242f3c;
+  --x: #75adff;
+  --o: #ffa370;
+  --good: #63d692;
+  --warn: #f0be54;
+  --bad: #f58484;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
@@ -199,9 +202,10 @@ h2 {
   position: absolute;
   top: 6px;
   left: 9px;
-  font-size: 0.66rem;
+  font-size: 0.68rem;
+  font-weight: 600;
   color: var(--muted);
-  opacity: 0.7;
+  opacity: 0.95;
 }
 
 .mark {
@@ -261,10 +265,10 @@ h2 {
 .cell .rep-tag {
   position: absolute;
   bottom: 4px;
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   font-weight: 800;
-  padding: 1px 4px;
-  border-radius: 4px;
+  padding: 2px 5px;
+  border-radius: 5px;
   line-height: 1.2;
   pointer-events: none;
   z-index: 2;
@@ -272,23 +276,26 @@ h2 {
 }
 
 .cell .rep-best {
-  background: color-mix(in srgb, var(--good) 22%, var(--surface));
+  background: var(--surface);
   color: var(--good);
-  border: 1px solid var(--good);
+  border: 1.5px solid var(--good);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
   left: 4px;
 }
 
 .cell .rep-pred {
-  background: color-mix(in srgb, var(--x) 22%, var(--surface));
+  background: var(--surface);
   color: var(--x);
-  border: 1px solid var(--x);
+  border: 1.5px solid var(--x);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
   right: 4px;
 }
 
 .cell .rep-both {
-  background: color-mix(in srgb, var(--good) 22%, var(--surface));
+  background: var(--surface);
   color: var(--good);
-  border: 1px solid var(--good);
+  border: 1.5px solid var(--good);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
@@ -321,14 +328,34 @@ select {
   padding: 10px 14px;
   cursor: pointer;
   border: 2px solid var(--line);
-  background: transparent;
+  background: var(--surface);
   color: var(--ink);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+select option {
+  background-color: var(--surface);
+  color: var(--ink);
+}
+
+.btn:hover,
+select:hover {
+  border-color: var(--muted);
 }
 
 .btn.pri {
   background: var(--ink);
   color: var(--bg);
   border-color: var(--ink);
+}
+
+.btn.pri:hover {
+  opacity: 0.92;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .btn:focus-visible,
@@ -464,15 +491,18 @@ ul.moves {
 
 .conf-pill {
   font-weight: 700;
-  color: var(--muted);
+  color: var(--ink);
   background: var(--bg);
-  padding: 1px 5px;
+  border: 1px solid var(--line);
+  padding: 1px 6px;
   border-radius: 4px;
   font-size: 0.72rem;
 }
 
 .pred-chip.hit .conf-pill {
   color: var(--good);
+  border-color: color-mix(in srgb, var(--good) 45%, var(--line));
+  background: color-mix(in srgb, var(--good) 12%, var(--bg));
 }
 
 /* ==========================================================================
@@ -486,10 +516,10 @@ ul.moves {
 }
 
 .pattern-pill {
-  background: color-mix(in srgb, var(--x) 12%, var(--surface));
-  border: 1px solid color-mix(in srgb, var(--x) 30%, var(--surface));
+  background: color-mix(in srgb, var(--x) 15%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--x) 35%, var(--surface));
   color: var(--ink);
-  padding: 4px 9px;
+  padding: 5px 10px;
   border-radius: 8px;
   font-size: 0.82rem;
   font-weight: 600;
@@ -497,6 +527,7 @@ ul.moves {
 
 .pattern-pill b {
   color: var(--x);
+  font-weight: 800;
 }
 
 /* ==========================================================================
@@ -549,6 +580,11 @@ ul.moves {
   height: auto;
   display: block;
   overflow: visible;
+}
+
+.chart-svg text {
+  fill: var(--muted);
+  font-weight: 600;
 }
 
 .chart-legend {
@@ -639,7 +675,10 @@ ul.moves {
   justify-content: center;
   border-radius: 8px;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
 }
 
 /* ==========================================================================

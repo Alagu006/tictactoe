@@ -33,9 +33,12 @@ function createProgressBar(label, hits, total) {
 function buildMoveGrid(pos, totalMoves) {
   let grid = '';
   for (let cellIndex = 0; cellIndex < 9; cellIndex++) {
-    const pct = Math.round((100 * (pos[cellIndex] || 0)) / totalMoves);
+    const pct = totalMoves > 0 ? Math.round((100 * (pos[cellIndex] || 0)) / totalMoves) : 0;
+    const bg = pct > 0
+      ? `color-mix(in srgb,var(--x) ${Math.min(48, Math.round(pct * 0.9))}%,var(--surface))`
+      : 'var(--surface)';
     grid += `
-      <div class="hcell" style="background:color-mix(in srgb,var(--x) ${Math.min(80, pct * 2)}%,var(--bg))" title="${formatCoordinates(cellIndex)}: ${pct}% of moves">
+      <div class="hcell" style="background:${bg}" title="${formatCoordinates(cellIndex)}: ${pct}% of moves">
         ${pct}%
       </div>
     `;
@@ -55,8 +58,8 @@ function buildMistakeGrid(mistakeArray, totalMistakes) {
     const errorCount = mistakeArray[cellIndex] || 0;
     const pct = totalMistakes > 0 ? Math.round((100 * errorCount) / totalMistakes) : 0;
     const bg = totalMistakes > 0 && pct > 0
-      ? `color-mix(in srgb,var(--bad) ${Math.min(80, Math.max(15, pct * 2))}%,var(--bg))`
-      : 'var(--bg)';
+      ? `color-mix(in srgb,var(--bad) ${Math.min(48, Math.max(12, Math.round(pct * 0.9)))}%,var(--surface))`
+      : 'var(--surface)';
     const tip = totalMistakes > 0 ? `${formatCoordinates(cellIndex)}: ${pct}% of mistakes (${errorCount})` : '0 mistakes';
     grid += `<div class="hcell" style="background:${bg}" title="${tip}">${totalMistakes > 0 ? `${pct}%` : '0%'}</div>`;
   }
