@@ -1,0 +1,11 @@
+{
+  "name": "tictactoe-predictor",
+  "version": "2.0.0",
+  "description": "Tic-tac-toe predictor with habit learning, minimax, match replay, and trend charts",
+  "type": "module",
+  "scripts": {
+    "start": "npx serve .",
+    "test": "node --test",
+    "check": "node --test && node scripts/check-function-lengths.js"
+  }
+}

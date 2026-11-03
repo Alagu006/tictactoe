@@ -1,0 +1,668 @@
+/* ==========================================================================
+   1. DESIGN TOKENS & THEME VARIABLES
+   ========================================================================== */
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  --bg: #f1f4f8;
+  --surface: #ffffff;
+  --ink: #16202b;
+  --muted: #637385;
+  --line: #d9e0e8;
+  --grid: #dfe6ee;
+  --x: #2563eb;
+  --o: #e4572e;
+  --good: #1f9d63;
+  --warn: #cf8d12;
+  --bad: #d64545;
+  --shadow: 0 1px 2px rgba(22, 32, 43, 0.06), 0 8px 24px rgba(22, 32, 43, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f151c;
+    --surface: #18212b;
+    --ink: #e8eef4;
+    --muted: #98a7b6;
+    --line: #2b3846;
+    --grid: #222d39;
+    --x: #6ea8ff;
+    --o: #ff9a62;
+    --good: #5fd08e;
+    --warn: #e6b84f;
+    --bad: #f07a7a;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0f151c;
+  --surface: #18212b;
+  --ink: #e8eef4;
+  --muted: #98a7b6;
+  --line: #2b3846;
+  --grid: #222d39;
+  --x: #6ea8ff;
+  --o: #ff9a62;
+  --good: #5fd08e;
+  --warn: #e6b84f;
+  --bad: #f07a7a;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* ==========================================================================
+   2. BASE & TYPOGRAPHY
+   ========================================================================== */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.45;
+}
+
+main {
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 22px 16px 40px;
+}
+
+h1 {
+  font-size: 1.7rem;
+  font-weight: 800;
+  margin: 0 0 2px;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin: 0 0 8px;
+}
+
+.sub {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.card {
+  background: var(--surface);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.sec {
+  margin-top: 16px;
+}
+
+.sec p {
+  margin: 0 0 8px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+/* ==========================================================================
+   3. SCOREBOARD CARD
+   ========================================================================== */
+.score {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.score div {
+  background: var(--surface);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.score b {
+  display: block;
+  font-size: 1.4rem;
+  line-height: 1.2;
+}
+
+.score span {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.score .you b {
+  color: var(--x);
+}
+
+.score .cpu b {
+  color: var(--o);
+}
+
+/* ==========================================================================
+   4. GAME BOARD & MARK ANIMATIONS
+   ========================================================================== */
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  background: var(--grid);
+  padding: 6px;
+  border-radius: 18px;
+  aspect-ratio: 1 / 1;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+.cell {
+  position: relative;
+  background: var(--surface);
+  border: 0;
+  border-radius: 13px;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  min-height: 0;
+}
+
+.cell:not(:disabled):hover {
+  background: var(--bg);
+  transform: scale(0.97);
+}
+
+.cell:disabled {
+  cursor: default;
+}
+
+.cell:focus-visible {
+  outline: 3px solid var(--x);
+  outline-offset: 2px;
+}
+
+.coord {
+  position: absolute;
+  top: 6px;
+  left: 9px;
+  font-size: 0.66rem;
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.mark {
+  width: 62%;
+  height: 62%;
+}
+
+.mark path,
+.mark circle {
+  fill: none;
+  stroke-width: 11;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.x .mark path {
+  stroke: var(--x);
+}
+
+.o .mark circle {
+  stroke: var(--o);
+}
+
+.new .mark path,
+.new .mark circle {
+  animation: draw 0.35s ease-out both;
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.cell.line {
+  animation: glow 1s ease-in-out 2;
+}
+
+@keyframes glow {
+  50% {
+    background: var(--bg);
+    transform: scale(1.04);
+  }
+}
+
+/* ==========================================================================
+   5. REPLAY BOARD MARKERS
+   ========================================================================== */
+.cell.rep-played {
+  box-shadow: inset 0 0 0 3px var(--ink);
+}
+
+.cell .rep-tag {
+  position: absolute;
+  bottom: 4px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 4px;
+  line-height: 1.2;
+  pointer-events: none;
+  z-index: 2;
+  letter-spacing: -0.01em;
+}
+
+.cell .rep-best {
+  background: color-mix(in srgb, var(--good) 22%, var(--surface));
+  color: var(--good);
+  border: 1px solid var(--good);
+  left: 4px;
+}
+
+.cell .rep-pred {
+  background: color-mix(in srgb, var(--x) 22%, var(--surface));
+  color: var(--x);
+  border: 1px solid var(--x);
+  right: 4px;
+}
+
+.cell .rep-both {
+  background: color-mix(in srgb, var(--good) 22%, var(--surface));
+  color: var(--good);
+  border: 1px solid var(--good);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   6. CONTROLS, BUTTONS & STATUS
+   ========================================================================== */
+.status {
+  margin: 14px 0 0;
+  text-align: center;
+  font-weight: 600;
+  min-height: 1.5em;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn,
+select {
+  font: inherit;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  border: 2px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+}
+
+.btn.pri {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+.btn:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--x);
+  outline-offset: 2px;
+}
+
+.btn-sm {
+  padding: 5px 9px;
+  font-size: 0.82rem;
+  border-radius: 8px;
+}
+
+/* ==========================================================================
+   7. MATCH REPLAY TOOLBAR
+   ========================================================================== */
+.replay-box {
+  margin-top: 14px;
+  padding: 12px;
+  background: var(--bg);
+  border-radius: 12px;
+}
+
+.replay-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.replay-head h3 {
+  margin: 0;
+  font-size: 0.96rem;
+  font-weight: 800;
+}
+
+.replay-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.replay-step-txt {
+  font-weight: 700;
+  font-size: 0.85rem;
+  min-width: 76px;
+  text-align: center;
+}
+
+.replay-info {
+  font-size: 0.86rem;
+  margin-top: 6px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.replay-info b {
+  color: var(--ink);
+}
+
+/* ==========================================================================
+   8. MOVE LIST & CONFIDENCE CHIPS
+   ========================================================================== */
+ul.moves {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.moves li {
+  border-left: 4px solid var(--line);
+  padding: 8px 10px;
+  background: var(--bg);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.moves li:hover {
+  transform: translateX(2px);
+}
+
+.moves li.active {
+  outline: 2px solid var(--x);
+  outline-offset: 1px;
+  background: color-mix(in srgb, var(--x) 10%, var(--surface));
+}
+
+.moves li.best {
+  border-color: var(--good);
+}
+
+.moves li.ok {
+  border-color: var(--warn);
+}
+
+.moves li.miss {
+  border-color: var(--bad);
+}
+
+.moves b {
+  display: block;
+}
+
+.pred-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 5px;
+  margin-top: 7px;
+}
+
+.pred-chip {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 3px 7px;
+  font-size: 0.76rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pred-chip.hit {
+  border-color: var(--good);
+  background: color-mix(in srgb, var(--good) 12%, var(--surface));
+}
+
+.conf-pill {
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--bg);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+}
+
+.pred-chip.hit .conf-pill {
+  color: var(--good);
+}
+
+/* ==========================================================================
+   9. DETECTED PLAY PATTERNS
+   ========================================================================== */
+.patterns-box {
+  margin: 10px 0 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pattern-pill {
+  background: color-mix(in srgb, var(--x) 12%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--x) 30%, var(--surface));
+  color: var(--ink);
+  padding: 4px 9px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.pattern-pill b {
+  color: var(--x);
+}
+
+/* ==========================================================================
+   10. ACCURACY BARS
+   ========================================================================== */
+.bars {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: 104px 1fr 44px;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.88rem;
+}
+
+.bar i {
+  display: block;
+  height: 9px;
+  border-radius: 5px;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.bar i u {
+  display: block;
+  height: 100%;
+  background: var(--x);
+  border-radius: 5px;
+  transition: width 0.6s ease;
+}
+
+.bar span:last-child {
+  text-align: right;
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   11. PROGRESS TREND CHART (SVG)
+   ========================================================================== */
+.chart-box {
+  margin-top: 10px;
+}
+
+.chart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-dot.acc {
+  background: var(--x);
+}
+
+.legend-dot.mis {
+  background: var(--bad);
+  border-radius: 2px;
+}
+
+.chart-point {
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+
+.chart-point:focus-visible {
+  outline: 2px solid var(--x);
+  outline-offset: 2px;
+}
+
+.chart-tip {
+  font-size: 0.84rem;
+  font-weight: 600;
+  min-height: 1.4em;
+  margin-top: 6px;
+  text-align: center;
+  color: var(--ink);
+}
+
+/* ==========================================================================
+   12. HABITS & MISTAKE HEATMAP GRIDS
+   ========================================================================== */
+.heatmaps-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 12px 0;
+}
+
+@media (max-width: 390px) {
+  .heatmaps-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.heatmap-col h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.hgrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  max-width: 210px;
+  margin: 4px 0;
+}
+
+.hcell {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   13. ACCESSIBILITY & ANIMATION UTILITIES
+   ========================================================================== */
+.fade {
+  animation: fade 0.4s ease-out;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

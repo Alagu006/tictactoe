@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tic-tac-toe Predictor</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <h1>Tic-tac-toe predictor</h1>
+    <p class="sub">You play X. The computer learns how you play and predicts your moves. Your review appears after each match.</p>
+
+    <div class="score" id="score" role="region" aria-label="Game scoreboard"></div>
+    <div class="board" id="board" role="grid" aria-label="Tic-tac-toe board"></div>
+    <p class="status" id="status" aria-live="polite"></p>
+
+    <div class="controls">
+      <select id="level" aria-label="Computer difficulty">
+        <option value="easy">Easy</option>
+        <option value="medium" selected>Medium</option>
+        <option value="hard">Hard</option>
+        <option value="adaptive">Adaptive</option>
+      </select>
+      <button class="btn pri" id="newYou" type="button">I start</button>
+      <button class="btn" id="newCpu" type="button">Computer starts</button>
+    </div>
+
+    <section class="card sec" id="review" hidden aria-live="polite"></section>
+    <section class="card sec" id="progress"></section>
+    <section class="card sec" id="habits"></section>
+  </main>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
